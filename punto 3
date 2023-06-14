@@ -1,0 +1,78 @@
+class Pila():
+
+    def __init__(self):
+        self.__elements = []
+
+    def __eq__(self, stack_aux):
+        if isinstance(stack_aux, Pila):
+            return self.__elements == stack_aux.__elements
+        else:
+            return False
+
+    def push(self, value):
+        self.__elements.append(value)
+
+    def pop(self):
+        if self.size() > 0:
+            dato = self.__elements.pop()
+            return dato
+
+    def size(self):
+        return len(self.__elements)
+
+    def on_top(self):
+        if self.size() > 0:
+            return self.__elements[-1]
+
+bitacora = Pila()
+
+bitacora.push(("Namek", "Capturado1", 500)) 
+bitacora.push(("Vegeta", "Capturado2", 1000))
+bitacora.push(("Jupiter", "Capturado3", 600))
+bitacora.push(("Apolo", "Capturado4", 400))
+bitacora.push(("Fierie", "Han Solo", 900)) 
+
+print("Planetas visitados en el orden de las misiones:")
+while bitacora.size() > 0:
+    mision = bitacora.pop()
+    planeta = mision[0]
+    print(planeta)
+
+bitacora = Pila()
+total_creditos = 0
+
+bitacora.push(("Planeta1", "Capturado1", 100))
+bitacora.push(("Planeta2", "Capturado2", 200))
+bitacora.push(("Planeta3", "Capturado3", 300))
+bitacora.push(("Planeta4", "Capturado4", 400))
+bitacora.push(("Planeta5", "Han Solo", 500))
+
+while bitacora.size() > 0:
+    mision = bitacora.pop()
+    creditos = mision[2]
+    total_creditos += creditos
+
+print("Total de créditos galácticos recaudados:", total_creditos)
+
+bitacora = Pila()
+numero_mision = 0
+planeta_captura = ""
+
+bitacora.push(("Planeta1", "Capturado1", 100))
+bitacora.push(("Planeta2", "Capturado2", 200))
+bitacora.push(("Planeta3", "Capturado3", 300))
+bitacora.push(("Planeta4", "Capturado4", 400))
+bitacora.push(("Planeta5", "Han Solo", 500))
+
+while bitacora.size() > 0:
+    numero_mision += 1
+    mision = bitacora.pop()
+    planeta = mision[0]
+    capturado = mision[1]
+    
+    if capturado == "Han Solo":
+        planeta_captura = planeta
+        break
+
+print("Número de la misión en la que capturó a Han Solo:", numero_mision)
+print("Planeta en el que se capturó a Han Solo:", planeta_captura)
