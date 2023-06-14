@@ -1,0 +1,195 @@
+def criterio_comparacion(value, criterio):
+    if isinstance(value, (int, str, bool)):
+        return value
+    else:
+        dic_atributos = value.__dict__
+        if criterio in dic_atributos:
+            return dic_atributos[criterio]
+        else:
+            print("No se puede ordenar por este criterio")
+
+
+class Lista:
+    def __init__(self):
+        self.__elements = []
+
+    def insert(self, value, criterio=None):
+        if len(self.__elements) == 0 or criterio_comparacion(value, criterio) >= criterio_comparacion(self.__elements[-1], criterio):
+            self.__elements.append(value)
+        elif criterio_comparacion(value, criterio) < criterio_comparacion(self.__elements[0], criterio):
+            self.__elements.insert(0, value)
+        else:
+            index = 1
+            while criterio_comparacion(value, criterio) >= criterio_comparacion(self.__elements[index], criterio):
+                index += 1
+            self.__elements.insert(index, value)
+
+    def search(self, search_value, criterio=None):
+        position = None
+        first = 0
+        last = self.size() - 1
+        while first <= last and position is None:
+            middle = (first + last) // 2
+            if search_value == criterio_comparacion(self.__elements[middle], criterio):
+                position = middle
+            elif search_value > criterio_comparacion(self.__elements[middle], criterio):
+                first = middle + 1
+            else:
+                last = middle - 1
+        return position
+
+    def search_r(self, search_value, first, last, criterio=None):
+        middle = (first + last) // 2
+        if first > last:
+            return None
+        elif search_value == criterio_comparacion(self.__elements[middle], criterio):
+            return middle
+        elif search_value > criterio_comparacion(self.__elements[middle], criterio):
+            return self.search_r(search_value, middle + 1, last, criterio)
+        else:
+            return self.search_r(search_value, first, middle - 1, criterio)
+
+    def delete(self, value, criterio=None):
+        return_value = None
+        pos = self.search(value, criterio)
+        if pos is not None:
+            return_value = self.__elements.pop(pos)
+        return return_value
+
+    def size(self):
+        return len(self.__elements)
+
+    def barrido(self):
+        for value in self.__elements:
+            print(value)
+
+    def order_by(self, criterio=None, reverse=False):
+        dic_atributos = self.__elements[0].__dict__
+        if criterio in dic_atributos:
+            def func_criterio(valor):
+                return valor.__dict__[criterio]
+            self.__elements.sort(key=func_criterio, reverse=reverse)
+        else:
+            print("No se puede ordenar por este criterio")
+
+    def get_element_by_index(self, index):
+        return_value = None
+        if index >= 0 and index < self.size():
+            return_value = self.__elements[index]
+        return return_value
+
+    def set_value(self, value, new_value, criterio=None):
+        pos = self.search(value, criterio)
+        if pos is not None:
+            value = self.delete(value)
+            self.insert(new_value, criterio)
+
+
+class Superheroes:
+    def __init__(self, superheroe, nombre, grupo, aparicion):
+        self.superheroe = superheroe
+        self.nombre = nombre
+        self.grupo = grupo
+        self.aparicion = aparicion
+
+    def __str__(self):
+        return f"{self.superheroe} - {self.nombre} - {self.grupo} - {self.aparicion}"
+
+
+personaje1 = Superheroes("Capitana Marvel", "Carol Danvers", "Avengers", 1968)
+personaje2 = Superheroes("Star Lord", "Peter Quill", "Guardianes de la galaxia", 1976)
+personaje3 = Superheroes("Hulk", "Bruce Banner", "Avengers", 1962)
+personaje4 = Superheroes("Black Widow", "Natasha Romanoff", "Avengers", 1964)
+personaje5 = Superheroes("El Hombre Elastico", "Reed Richards", "Los Cuatro Fantasticos", 1961)
+
+lista_superheroes = Lista()
+
+lista_superheroes.insert(personaje1, "superheroe")
+lista_superheroes.insert(personaje2, "superheroe")
+lista_superheroes.insert(personaje3, "superheroe")
+lista_superheroes.insert(personaje4, "superheroe")
+lista_superheroes.insert(personaje5, "superheroe")
+print()
+
+if lista_superheroes.search("Capitana Marvel", "superheroe") is not None:
+    print("Capitana Marvel está en la lista")
+    personaje = lista_superheroes.get_element_by_index(lista_superheroes.search("Capitana Marvel", "superheroe"))
+    print("Nombre de personaje:", personaje.nombre)
+else:
+    print("Capitana Marvel no está en la lista")
+print()
+
+cola_guardianes = Lista()
+for personaje in lista_superheroes._Lista__elements:
+    if personaje.grupo == "Guardianes de la galaxia":
+        cola_guardianes.insert(personaje, "superheroe")
+
+print("Cantidad de superhéroes en el grupo 'Guardianes de la galaxia':", cola_guardianes.size())
+print()
+
+cuatro_fantasticos = Lista()
+guardianes_galaxia = Lista()
+cuatro_fantasticos.insert(personaje5, "grupo")
+guardianes_galaxia.insert(personaje2, "grupo")
+cuatro_fantasticos.order_by("superheroe", reverse=True)
+guardianes_galaxia.order_by("superheroe", reverse=True)
+print("Superhéroes de Los Cuatro Fantásticos en orden descendente:")
+cuatro_fantasticos.barrido()
+print("Superhéroes de Guardianes de la Galaxia en orden descendente:")
+guardianes_galaxia.barrido()
+print()
+
+print("Superhéroes con año de aparición posterior a 1960:")
+for personaje in lista_superheroes._Lista__elements:
+    if personaje.aparicion > 1960:
+        print(personaje)
+print()
+
+for i in range(lista_superheroes.size()):
+    if lista_superheroes.get_element_by_index(i).superheroe == "Black Widow":
+        lista_superheroes.get_element_by_index(i).superheroe = "Black Widow"
+        print("Nombre de 'Black Widow' corregido.")
+
+personajes_auxiliares = [
+    Superheroes("Black Cat", "Felicia Hardy", "Avengers", 1979),
+    Superheroes("Rocket Racoonn", "Rocket", "Guardianes de la galaxia", 1982),
+    Superheroes("Loki", "Loki Laufeyson", "Avengers", 1949)
+]
+print()
+
+for personaje_auxiliar in personajes_auxiliares:
+    if lista_superheroes.search(personaje_auxiliar.superheroe, "superheroe") is None:
+        lista_superheroes.insert(personaje_auxiliar, "superheroe")
+
+print("Personajes que comienzan con C, P o S:")
+for personaje in lista_superheroes._Lista__elements:
+    if personaje.nombre[0] in ["C", "P", "S"]:
+        print(personaje)
+print()
+
+superheroes_adicionales = [
+    Superheroes("Spider-Man", "Peter Parker", "Avengers", 1962),
+    Superheroes("Superman", "Clark Kent", "Justice League", 1938),
+    Superheroes("Wonder Woman", "Diana Prince", "Justice League", 1941),
+    Superheroes("Batman", "Bruce Wayne", "Justice League", 1939),
+    Superheroes("Thor", "Thor Odinson", "Avengers", 1962),
+    Superheroes("Black Panther", "T'Challa", "Avengers", 1966),
+    Superheroes("Wolverine", "Logan", "X-Men", 1974),
+    Superheroes("Flash", "Barry Allen", "Justice League", 1956),
+    Superheroes("Green Lantern", "Hal Jordan", "Justice League", 1959),
+    Superheroes("Aquaman", "Arthur Curry", "Justice League", 1941),
+    Superheroes("Captain America", "Steve Rogers", "Avengers", 1941),
+    Superheroes("Doctor Strange", "Stephen Strange", "Avengers", 1963),
+    Superheroes("Hawkeye", "Clint Barton", "Avengers", 1964),
+    Superheroes("Black Widow", "Natasha Romanoff", "Avengers", 1964),
+    Superheroes("Cyclops", "Scott Summers", "X-Men", 1963),
+    Superheroes("Jean Grey", "Jean Grey", "X-Men", 1963),
+    Superheroes("Rogue", "Anna Marie", "X-Men", 1981),
+    Superheroes("Storm", "Ororo Munroe", "X-Men", 1975),
+    Superheroes("Beast", "Hank McCoy", "X-Men", 1963),
+    Superheroes("Nightcrawler", "Kurt Wagner", "X-Men", 1975)
+]
+
+for superheroe_adicional in superheroes_adicionales:
+    if lista_superheroes.search(superheroe_adicional.superheroe, "superheroe") is None:
+        lista_superheroes.insert(superheroe_adicional, "superheroe")
