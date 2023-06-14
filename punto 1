@@ -1,0 +1,10 @@
+def contar_palabra(lista_palabras, palabra, indice=0, cuenta=0):
+    if indice == len(lista_palabras):
+        return cuenta
+    if lista_palabras[indice] == palabra:
+        cuenta += 1
+    return contar_palabra(lista_palabras, palabra, indice + 1, cuenta)
+
+palabras = ["hola", "mundo", "hola", "python"]
+
+print( contar_palabra(palabras, "hola"))
